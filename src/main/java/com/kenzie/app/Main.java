@@ -87,15 +87,23 @@ public class Main {
         String quitString = "";
         String json = CustomHttpClient.sendGET("https://jservice.kenzie.academy/api/clues");
         Scanner scan = new Scanner(System.in);
+        String start = "";
         DTO dto = convert(json);
         List<Clues> cluesList = dto.getClues();
         System.out.print("Hello. \nWould you like to play a game? Please enter 'Y' for yes or 'N' for no: ");
-        String start = scan.nextLine();
+        start = scan.nextLine();
+        while (!(start.equalsIgnoreCase("y")) && !(start.equalsIgnoreCase("n"))) {
+            System.out.print("That is not a valid response. Please enter 'Y' for yes or 'N' for no: ");
+            start = scan.nextLine();
+        }
+
+
         if (start.equalsIgnoreCase("y")) {
             System.out.println("\n \nWelcome to Rain's Capstone Game. \nToday, we'll be playing some trivia. For every question" +
-                    " you get correct, you will receive 1 point.\nIf you get 3 or more answers incorrect, you lose. If" +
-                    " you get 10 points, you win!\nIf at any time you want to STOP playing, please press" +
-                    " 'Q' to quit.\n Your progress will not be saved.\n\n");
+                    " you get correct, you will receive 1 point.\nAfter you answer 10 questions, your results will be displayed.\nIf at any time you want to STOP playing, please press" +
+                    " 'Q' to quit.\n Your progress will not be saved.\n" +
+                    "- - - - - - - - - - - - - - -\n");
+
 
             //TODO: CHANGES TO BE MADE
             /*
@@ -104,52 +112,52 @@ public class Main {
                 BLANK/WHITESPACE
                 JUST HITTING "ENTER" >> EMPTY STRING
             TODO: CHANGE THE WHILE LOOP TO AN IF STATEMENT
+
+            TODO: make it so that if the question has been asked, then it can't be asked again
             USE A FOR LOOP -- ONLY ASK 10 QUESTIONS IN TOTAL, THEN RETURN THE SCORE AT THE END
             STILL USE THE 'QUIT' FEATURE, TO SHOW THEM THEIR RESULTS IF THEY QUIT OR THEY DON'T
              */
-        while (score < 2 && !(quitString.equalsIgnoreCase("q"))) {
-            Clues q1 = getRandomClue(cluesList);
-            printQuestion(q1);
-            String response = scan.nextLine();
-            if (response.equalsIgnoreCase("q")) {
-                quitString = "q";
-            } else {
-                if (gradeAnswer(response, q1)) {
-                    score++;
-                    System.out.println("You got it right! Nice.");
-                    System.out.println("Your new score: " + score);
-                    System.out.println();
+        //while (!(quitString.equalsIgnoreCase("q")) || ) {
+            for (int i = 1; i <= 10; i++) {
+
+                Clues q1 = getRandomClue(cluesList);
+                System.out.println(i + ". ");
+                printQuestion(q1);
+                String response = scan.nextLine();
+                if (response.equalsIgnoreCase("q")) {
+                    quitString = "q";
                 } else {
-                    wrongAns++;
-                    System.out.println("Incorrect! Try again.");
-                    System.out.println("CORRECT ANSWER: " + q1.getAnswer());
-                    System.out.println("Your current score: " + score);
-                    System.out.println();
+                    if (gradeAnswer(response, q1)) {
+                        score++;
+                        System.out.println("You got it right! Nice.");
+                        System.out.println("Your new score: " + score);
+                        System.out.println();
+                    } else {
+                        wrongAns++;
+                        System.out.println("Incorrect! Try again.");
+                        System.out.println("CORRECT ANSWER: " + q1.getAnswer());
+                        System.out.println("Your current score: " + score);
+                        System.out.println();
+                    }
                 }
-            }
-        }
+            }//ends for loop
+       // }//ends while loop
         if (quitString.equalsIgnoreCase("q")) {
             System.out.println("Sorry to see you go.");
-        } else {
-
         }
             System.out.println("You have now reached the end of the game.\n" +
                     "-~-~-~-~-~-~-~-~-~-~-~-~-~\n" +
                     "Here's your results:\n" +
                     "You got " + wrongAns + " questions incorrect " +
                     "\nand got " + score + " questions right. Thanks for playing.");
+        //TODO: make it so that depending on how many they get right, it changes what you tell
+            //TODO: at the end.
 
-        } else {
+        } //ends your BIG if statement
+        else {
             System.out.println("Too bad. It's a fun game! Run the program again to play.");
-        }
-
-
-
-
-
-
-
-    }
+        } //ends if they say 'N' for no
+    }//ends main
 
 
 
