@@ -23,6 +23,8 @@ public class DTO {
                 "clues=" + clues.toString() +
                 '}';
     }
+
+
 } //ends CluesDTO
 
 class Clues {
