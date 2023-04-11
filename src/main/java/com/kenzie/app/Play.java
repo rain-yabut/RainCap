@@ -2,6 +2,7 @@ package com.kenzie.app;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,6 +11,7 @@ public class Play {
 
     public Play(){
         p1 = new Player();
+
     }
 
     public static DTO convert(String json){
@@ -45,17 +47,48 @@ public class Play {
         }
     }
 
+    public static void printResults(Player p1){
+        System.out.println("Loading up your results.");
+        System.out.println("Name: " + p1.getName());
+        System.out.println("Total questions: " + p1.getQuestionsList().size());
+        if (p1.getQuestionsList().size() < 10) {
+            System.out.println("You should play all the way through next time!");
+        } else {
+            System.out.println("You made it so far! I'm glad you're here.");
+        }
+
+                //add commentary for if they get a certain amount of answers right
+        System.out.println("Correct Answers: " + p1.getScore());
+        System.out.println("Incorrect Answers: " + p1.getWrongAns());
+        if (p1.getScore() > p1.getWrongAns()) {
+            System.out.println("(/^-^)/ Great job.");
+        } else if (p1.getScore() < p1.getWrongAns()) {
+            System.out.println("Yikes. (o_o)");
+        } else {
+            System.out.println("Solid.");
+        }
+        System.out.println("# - YOUR ANSWER | CORRECT ANSWER");
+        for (int i = 0 ; i < p1.getQuestionsList().size(); i++){
+            System.out.println((i+1) + p1.getAnsList().get(i) + "\t| " + p1.getCorrectAnsList().get(i));
+        }
+    }
+
     public static void runGame()  {
         //Write main execution code here
         String json = CustomHttpClient.sendGET("https://jservice.kenzie.academy/api/clues");
         DTO dto = convert(json);
         List<Clues> cluesList = dto.getClues();
+        Scanner scan = new Scanner(System.in);
         Player p1 = new Player();
 
             System.out.println("\n \nWelcome to Rain's Capstone Game. \nToday, we'll be playing some trivia. For every question" +
                     " you get correct, you will receive 1 point.\nAfter you answer 10 questions, your results will be displayed.\nIf at any time you want to STOP playing, please press" +
-                    " 'Q' to quit.\n Your progress will not be saved.\n" +
+                    " ENTER to quit.\n Your progress will not be saved.\n" +
                     "- - - - - - - - - - - - - - -\n");
+            System.out.print("What is your name? ");
+            String name = scan.nextLine();
+            p1.setName(name);
+
 
 
             //TODO: CHANGES TO BE MADE
@@ -74,28 +107,39 @@ public class Play {
             for (int i = 1; i <= 10; i++) {
 
                 Clues q1 = getRandomClue(cluesList);
+                p1.addQuestionToList(q1.getQuestion());
+                p1.addCorrectAns(q1.getAnswer());
                 System.out.println(i + ". ");
                 String response = p1.answerQuestion(q1);
-                if (gradeAnswer(response, q1)) {
-                    p1.setScore(p1.getScore()+1);
-                    System.out.println("You got it right! Nice.");
-                    System.out.println("Your new score: " + p1.getScore());
-                    System.out.println();
+                //if the response is "", quit the game
+                //set i to 10
+                if (response.equalsIgnoreCase("")) {
+                    System.out.println("************\nEnding game. Your progress will not be saved!");
+                    i = 10;
                 } else {
-                    p1.setScore(p1.getWrongAns()+1);
-                    System.out.println("Incorrect! Try again.");
-                    System.out.println("CORRECT ANSWER: " + q1.getAnswer());
-                    System.out.println("Your current score: " + p1.getScore());
-                    System.out.println();
+                    //else {
+                    if (gradeAnswer(response, q1)) {
+                        p1.setScore(p1.getScore() + 1);
+                        System.out.println("You got it right! Nice.");
+                        System.out.println("Your new score: " + p1.getScore());
+                        System.out.println();
+                    } else {
+                        p1.setWrongAns(p1.getWrongAns() + 1);
+                        System.out.println("Incorrect! Try again.");
+                        System.out.println("CORRECT ANSWER: " + q1.getAnswer());
+                        System.out.println("Your current score: " + p1.getScore());
+                        System.out.println();
+                    }
                 }
-                }
+            }
             //ends for loop
             // }//ends while loop
-            System.out.println("You have now reached the end of the game.\n" +
-                    "-~-~-~-~-~-~-~-~-~-~-~-~-~\n" +
-                    "Here's your results:\n" +
-                    "You got " + p1.getWrongAns() + " questions incorrect " +
-                    "\nand got " + p1.getScore() + " questions right.");
+            if (p1.getAnsList().size() < 10) {
+                System.out.println("I see you have decided to stop playing. Sorry to see you go.");
+                System.out.println("-~-~-~-~-~-~-~-~-~-~-~-~-~");
+            }
+            //create method that prints out the results of the game for the player
+            printResults(p1);
             //TODO: make it so that depending on how many they get right, it changes what you tell
             //TODO: at the end.
     }//ends main
