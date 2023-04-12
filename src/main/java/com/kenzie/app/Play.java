@@ -7,13 +7,18 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Play {
+    //properties
     private Player p1;
 
+    //constructor
     public Play(){
         p1 = new Player();
 
     }
 
+    //methods
+
+    //goal: write convert method that takes in a json String and returns a DTO
     public static DTO convert(String json){
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -25,6 +30,7 @@ public class Play {
         }
     }
 
+    //goal: write a method that takes in a list of Clues and returns one singular clue
     public static Clues getRandomClue(List<Clues> list){
         //get a random number and then use that as the integer to get a random question in the list;
         int randomNumber = (int) (Math.random()*100);
@@ -32,6 +38,7 @@ public class Play {
         return randomClue;
     }
 
+    //GOAL: write a method that displays the category and the question of a specific clue that is given
     public static void printQuestion(Clues clue){
         String category = clue.getCategory().getTitle();
         String question = clue.getQuestion();
@@ -39,6 +46,8 @@ public class Play {
         System.out.println("Question: " + question);
     }
 
+    //GOAL: write a method that takes in a user's response and a clue that compares the
+        //answers >> return true if the answer is correct and return false if the answer is wrong
     public static boolean gradeAnswer(String response, Clues question){
         if (response.equalsIgnoreCase(question.getAnswer())){
             return true;
@@ -47,6 +56,7 @@ public class Play {
         }
     }
 
+    //GOAL: write a method that takes in a player, and uses the getter methods to display their results
     public static void printResults(Player p1){
         System.out.println("Loading up your results.");
         System.out.println("Name: " + p1.getName());
@@ -56,7 +66,6 @@ public class Play {
         } else {
             System.out.println("You made it so far! I'm glad you're here.");
         }
-
                 //add commentary for if they get a certain amount of answers right
         System.out.println("Correct Answers: " + p1.getScore());
         System.out.println("Incorrect Answers: " + p1.getWrongAns());
@@ -73,37 +82,36 @@ public class Play {
         }
     }
 
+    //GOAL: write a displayIntro method that takes in a Player and returns a personalized welcome message
+        //and then asks if the player is ready to play
+    public static void displayIntro(Player p1){
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Hello. What is your name? ");
+        p1.setName(scan.nextLine());
+        System.out.println("Thanks, " + p1.getName());
+        System.out.print("Would you like to play a game? Press 'Y' for yes or 'N' for no: " );
+    }
+
+    //GOAL: write a method that runs the game
     public static void runGame()  {
-        //Write main execution code here
+        //GOAL: runGame using the methods
         String json = CustomHttpClient.sendGET("https://jservice.kenzie.academy/api/clues");
         DTO dto = convert(json);
         List<Clues> cluesList = dto.getClues();
         Scanner scan = new Scanner(System.in);
         Player p1 = new Player();
-
-            System.out.println("\n \nWelcome to Rain's Capstone Game. \nToday, we'll be playing some trivia. For every question" +
+        displayIntro(p1);
+        String beginString = scan.nextLine();
+        while (beginString.equals("")){
+            System.out.print("Hmm. That wasn't a yes or a no. \nPress 'Y' for yes or 'N' for no: ");
+            beginString = scan.nextLine();
+        }
+        if (beginString.equalsIgnoreCase("y")) {
+            System.out.println("\nAwesome " + p1.getName() + "! Let's play.");
+            System.out.println("\n \nWelcome to RainCap! \nToday, we'll be playing some trivia. For every question" +
                     " you get correct, you will receive 1 point.\nAfter you answer 10 questions, your results will be displayed.\nIf at any time you want to STOP playing, please press" +
                     " ENTER to quit.\n Your progress will not be saved.\n" +
                     "- - - - - - - - - - - - - - -\n");
-            System.out.print("What is your name? ");
-            String name = scan.nextLine();
-            p1.setName(name);
-
-
-
-            //TODO: CHANGES TO BE MADE
-            /*
-            TODO: HANDLE EDGE CASES FOR THE SCANNER WHEN ASKING THE QUESTIONS
-                CAPITALS
-                BLANK/WHITESPACE
-                JUST HITTING "ENTER" >> EMPTY STRING
-            TODO: CHANGE THE WHILE LOOP TO AN IF STATEMENT
-
-            TODO: make it so that if the question has been asked, then it can't be asked again
-            USE A FOR LOOP -- ONLY ASK 10 QUESTIONS IN TOTAL, THEN RETURN THE SCORE AT THE END
-            STILL USE THE 'QUIT' FEATURE, TO SHOW THEM THEIR RESULTS IF THEY QUIT OR THEY DON'T
-             */
-            //while (!(quitString.equalsIgnoreCase("q")) || ) {
             for (int i = 1; i <= 10; i++) {
 
                 Clues q1 = getRandomClue(cluesList);
@@ -117,7 +125,6 @@ public class Play {
                     System.out.println("************\nEnding game. Your progress will not be saved!");
                     i = 10;
                 } else {
-                    //else {
                     if (gradeAnswer(response, q1)) {
                         p1.setScore(p1.getScore() + 1);
                         System.out.println("You got it right! Nice.");
@@ -130,18 +137,19 @@ public class Play {
                         System.out.println("Your current score: " + p1.getScore());
                         System.out.println();
                     }
-                }
-            }
-            //ends for loop
-            // }//ends while loop
+                } //ends else
+            } //ends for loop
+
             if (p1.getAnsList().size() < 10) {
-                System.out.println("I see you have decided to stop playing. Sorry to see you go.");
+                System.out.println("I see you have decided to quit. Sorry to see you go.");
                 System.out.println("-~-~-~-~-~-~-~-~-~-~-~-~-~");
             }
+        } else { //BIG else
+            System.out.println("Oh, okay.");
+        }
             //create method that prints out the results of the game for the player
             printResults(p1);
-            //TODO: make it so that depending on how many they get right, it changes what you tell
-            //TODO: at the end.
+            System.out.println("Thanks for playing, " + p1.getName() + "!");
     }//ends main
 
 }//ends play

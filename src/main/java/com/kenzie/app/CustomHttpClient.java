@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CustomHttpClient {
 
-    //TODO: Write sendGET method that takes URL and returns response
+    //GOAL: write sendGET method that takes URL and returns response
     public static String sendGET(String URLString) {
         //** Start of GET request algorithm
         //setting up the query/call
@@ -49,6 +49,7 @@ public class CustomHttpClient {
         }
     } //ends sendGET
 
+    //write a method that returns a list of Clues taking in a responseBody
     public static List<Clues> getCluesList(String httpResponseBody){
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<List<Clues>> dataType = new TypeReference<>(){};
@@ -59,7 +60,7 @@ public class CustomHttpClient {
             System.out.println(e.getMessage());
             return new ArrayList<Clues>();
         }
-    }
+    } //ends getCluesList
 
 } //ends HttpClient
 

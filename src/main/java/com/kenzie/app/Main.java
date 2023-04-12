@@ -20,6 +20,9 @@ public class Main {
 
      */
 
+    //TODO: FINISH UML DIAGRAM
+        //TODO: FINISH LABELLING PROJECT
+        //TODO: EXTRA CREDIT PROJECT?
     /*
     THE PLAN:
 
@@ -52,6 +55,7 @@ public class Main {
     public static void main(String[] args) {
         //Write main execution code here
         Play.runGame();
+
     }
 
 }

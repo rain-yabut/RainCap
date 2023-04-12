@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Player {
+    //properties
     private int score, wrongAns;
     private String name;
     private ArrayList<String> questionsList, correctAnsList;
     private ArrayList<String> ansList;
+
+    //constructors
     public Player(String name){
         this.name = name;
         score = 0;
@@ -22,6 +25,8 @@ public class Player {
         questionsList = new ArrayList<String>();
         correctAnsList = new ArrayList<String>();
     }
+
+    //methods
 
     public String answerQuestion(Clues clue) {
         Scanner scan = new Scanner(System.in);
