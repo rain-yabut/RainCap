@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class DTO {
-
+//properties
     @JsonProperty("clues")
     private List<Clues> clues;
-
+//methods
     public List<Clues> getClues() {
         return clues;
     }
@@ -28,6 +28,7 @@ public class DTO {
 } //ends CluesDTO
 
 class Clues {
+    //properties
     @JsonProperty("canon")
     private boolean canon;
     @JsonProperty("game")
@@ -49,6 +50,7 @@ class Clues {
     @JsonProperty("id")
     private int id;
 
+    //methods
     public boolean getCanon() {
         return canon;
     }
@@ -147,6 +149,7 @@ class Clues {
 } //ends clues class
 
 class Category {
+    //properties
     @JsonProperty("canon")
     private boolean canon;
     @JsonProperty("title")
@@ -154,6 +157,7 @@ class Category {
     @JsonProperty("id")
     private int id;
 
+    //methods
     public boolean getCanon() {
         return canon;
     }
@@ -189,11 +193,13 @@ class Category {
 } //ends category class
 
 class Game {
+    //properties
     @JsonProperty("canon")
     private boolean canon;
     @JsonProperty("aired")
     private String aired;
 
+    //methods
     public boolean getCanon() {
         return canon;
     }
